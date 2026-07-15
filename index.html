@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ヒジリBlog — 日々を、彩り豊かに。</title>
+<meta name="description" content="ヒジリBlog。自己紹介や経歴、日々の出来事、ゲームやお出かけの記録を綴る個人ブログ。">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a href="index.html" class="brand-mark" style="text-decoration:none;">
+      <span class="tape">Blog</span> ヒジリBlog
+    </a>
+    <nav class="main-nav">
+      <a href="index.html">ホーム</a>
+      <a href="blog.html">記事一覧</a>
+      <a href="index.html#about">プロフィール</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-inner">
+    <div>
+      <span class="hero-eyebrow">ようこそ、</span>
+      <h1><span class="tape-title">ヒジリBlog</span>へ</h1>
+      <p class="lead" id="hero-lead">しがない人間の気まま投稿です。</p>
+      <div class="hero-actions">
+        <a href="blog.html" class="btn btn-primary">記事を読む</a>
+        <a href="index.html#about" class="btn btn-outline">自己紹介を見る</a>
+      </div>
+    </div>
+    <div class="polaroid-stack" aria-hidden="true">
+      <figure class="polaroid p1">
+        <div class="washi" style="background:var(--cat-diary);"></div>
+        <div class="frame" style="background:linear-gradient(135deg,#FFE3D3,#FFD3C2);">📓</div>
+        <figcaption>今日のひとこと</figcaption>
+      </figure>
+      <figure class="polaroid p2">
+        <div class="washi" style="background:var(--cat-game);"></div>
+        <div class="frame" style="background:linear-gradient(135deg,#E7E1FF,#D6CBFF);">🎮</div>
+        <figcaption>ゲームの記録</figcaption>
+      </figure>
+      <figure class="polaroid p3">
+        <div class="washi" style="background:var(--cat-outing);"></div>
+        <div class="frame" style="background:linear-gradient(135deg,#D3F3EE,#BDEDE3);">🚃</div>
+        <figcaption>お出かけ日記</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-eyebrow">01</span>
+      <h2>自己紹介</h2>
+    </div>
+    <div class="card about-card">
+      <div class="washi-strip"></div>
+      <div id="bio-content" class="bio">
+        <p>読み込み中…</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="history">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-eyebrow">02</span>
+      <h2>学歴・経歴</h2>
+    </div>
+    <div class="card">
+      <ol class="timeline" id="timeline"></ol>
+    </div>
+  </div>
+</section>
+
+<section id="latest">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-eyebrow">03</span>
+      <h2>最近の投稿</h2>
+    </div>
+    <div class="post-grid" id="latest-posts">
+      <div class="empty-state"><div class="stamp">読み込み中…</div></div>
+    </div>
+    <div style="text-align:center;margin-top:28px;">
+      <a href="blog.html" class="btn btn-outline">記事一覧を見る</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>© <span id="year"></span> ヒジリBlog</p>
+  </div>
+</footer>
+
+<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+<script src="js/site.js"></script>
+</body>
+</html>

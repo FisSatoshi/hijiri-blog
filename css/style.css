@@ -1,0 +1,467 @@
+/* ==========================================================================
+   ヒジリBlog — デザイントークン
+   コンセプト：色とりどりの「手帳・スクラップブック」
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@400;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Yomogi&display=swap');
+
+:root{
+  /* --- カラー --- */
+  --paper:        #F4F5FB;   /* 背景：淡いラベンダーブルーの紙 */
+  --paper-line:   #E1E3F0;   /* ノートの罫線 */
+  --ink:          #262338;   /* 本文の文字色 */
+  --ink-soft:     #605C7A;   /* 補助テキスト */
+  --white:        #FFFFFF;
+
+  --brand:        #E94F7B;   /* ブランドのメインカラー（ラズベリーピンク） */
+  --brand-dark:   #C93A64;
+
+  --cat-diary:    #FF8552;   /* 日記：珊瑚オレンジ */
+  --cat-game:     #7C5CFC;   /* ゲーム：バイオレット */
+  --cat-outing:   #17A398;   /* お出かけ：ティール */
+  --cat-other:    #FFC145;   /* その他：アンバー */
+
+  /* --- タイポグラフィ --- */
+  --font-display: 'Kaisei Decol', serif;
+  --font-body:    'Zen Kaku Gothic New', sans-serif;
+  --font-hand:    'Yomogi', cursive;
+
+  /* --- その他 --- */
+  --radius-card:  14px;
+  --shadow-card:  0 6px 18px rgba(38, 35, 56, 0.10), 0 1px 3px rgba(38,35,56,0.08);
+  --shadow-card-hover: 0 12px 28px rgba(38, 35, 56, 0.16), 0 2px 6px rgba(38,35,56,0.10);
+}
+
+*{ box-sizing: border-box; }
+
+html{ scroll-behavior: smooth; }
+
+body{
+  margin: 0;
+  background:
+    linear-gradient(var(--paper-line) 1px, transparent 1px) 0 0/100% 32px,
+    var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  line-height: 1.85;
+  -webkit-font-smoothing: antialiased;
+}
+
+img, video{ max-width: 100%; display:block; }
+
+a{ color: var(--brand-dark); text-decoration: none; }
+a:hover{ text-decoration: underline; }
+
+h1, h2, h3{
+  font-family: var(--font-display);
+  color: var(--ink);
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* focus visibility */
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, [contenteditable]:focus-visible{
+  outline: 3px solid var(--brand);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{ animation: none !important; transition: none !important; }
+}
+
+.wrap{
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ==========================================================================
+   ヘッダー
+   ========================================================================== */
+.site-header{
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(244, 245, 251, 0.86);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px dashed var(--paper-line);
+}
+.site-header .wrap{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
+.brand-mark{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.brand-mark .tape{
+  display: inline-block;
+  background: var(--brand);
+  color: white;
+  padding: 3px 10px;
+  border-radius: 3px;
+  transform: rotate(-3deg);
+  font-size: 15px;
+  font-family: var(--font-hand);
+}
+.main-nav{ display: flex; gap: 22px; align-items: center; }
+.main-nav a{
+  color: var(--ink-soft);
+  font-weight: 500;
+  font-size: 15px;
+}
+.main-nav a.is-active{ color: var(--brand-dark); }
+.main-nav a:hover{ color: var(--brand-dark); text-decoration: none; }
+
+/* ==========================================================================
+   ヒーロー（コルクボード風）
+   ========================================================================== */
+.hero{
+  position: relative;
+  padding: 64px 0 40px;
+  overflow: hidden;
+}
+.hero-inner{
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 32px;
+  align-items: center;
+}
+.hero-eyebrow{
+  font-family: var(--font-hand);
+  color: var(--brand-dark);
+  font-size: 20px;
+  margin-bottom: 6px;
+  display: inline-block;
+}
+.hero h1{
+  font-size: clamp(36px, 5.2vw, 56px);
+  font-weight: 700;
+}
+.hero h1 .tape-title{
+  background: linear-gradient(180deg, transparent 60%, rgba(233,79,123,0.28) 60%);
+}
+.hero p.lead{
+  margin-top: 18px;
+  font-size: 18px;
+  color: var(--ink-soft);
+  max-width: 46ch;
+}
+.hero-actions{ margin-top: 28px; display:flex; gap:14px; flex-wrap: wrap; }
+
+.btn{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 15px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.btn:hover{ transform: translateY(-2px); text-decoration:none; }
+.btn-primary{ background: var(--brand); color: white; box-shadow: var(--shadow-card); }
+.btn-primary:hover{ background: var(--brand-dark); box-shadow: var(--shadow-card-hover); }
+.btn-outline{ background: transparent; border-color: var(--ink); color: var(--ink); }
+.btn-outline:hover{ background: var(--ink); color: var(--paper); }
+
+/* Polaroid stack */
+.polaroid-stack{
+  position: relative;
+  height: 340px;
+}
+.polaroid{
+  position: absolute;
+  width: 200px;
+  background: white;
+  padding: 10px 10px 34px;
+  border-radius: 4px;
+  box-shadow: var(--shadow-card);
+  animation: float 6s ease-in-out infinite;
+}
+.polaroid .frame{
+  width: 100%;
+  aspect-ratio: 4/3;
+  border-radius: 2px;
+  display:flex; align-items:center; justify-content:center;
+  font-size: 34px;
+}
+.polaroid figcaption{
+  font-family: var(--font-hand);
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin-top: 8px;
+  text-align: center;
+}
+.polaroid.p1{ top: 6px; left: 30px; transform: rotate(-8deg); animation-delay: 0s; z-index:3;}
+.polaroid.p2{ top: 90px; left: 190px; transform: rotate(6deg); animation-delay: .8s; z-index:2;}
+.polaroid.p3{ top: 170px; left: 60px; transform: rotate(3deg); animation-delay: 1.6s; z-index:1;}
+.polaroid .washi{
+  position:absolute; top:-10px; left: 50%; transform: translateX(-50%) rotate(-2deg);
+  width: 60px; height: 20px; opacity: .85; border-radius: 2px;
+}
+
+@keyframes float{
+  0%, 100%{ transform: translateY(0) rotate(var(--r, 0deg)); }
+  50%{ transform: translateY(-10px) rotate(var(--r, 0deg)); }
+}
+.polaroid.p1{ --r: -8deg; }
+.polaroid.p2{ --r: 6deg; }
+.polaroid.p3{ --r: 3deg; }
+
+/* ==========================================================================
+   セクション共通
+   ========================================================================== */
+section{ padding: 56px 0; }
+.section-head{ margin-bottom: 30px; }
+.section-eyebrow{
+  font-family: var(--font-hand);
+  color: var(--brand-dark);
+  font-size: 18px;
+}
+.section-head h2{ font-size: 30px; margin-top: 4px; }
+
+.card{
+  background: var(--white);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 28px;
+}
+
+/* 自己紹介 */
+.about-card{ position: relative; }
+.about-card .washi-strip{
+  position: absolute;
+  top: -12px; left: 36px;
+  width: 90px; height: 22px;
+  background: var(--cat-other);
+  opacity: .9;
+  transform: rotate(-3deg);
+  border-radius: 2px;
+}
+.about-card .bio{ color: var(--ink); }
+
+/* 経歴タイムライン */
+.timeline{
+  list-style: none;
+  margin: 0; padding: 0;
+  border-left: 3px dashed var(--paper-line);
+  margin-left: 8px;
+}
+.timeline li{
+  position: relative;
+  padding: 0 0 26px 26px;
+}
+.timeline li::before{
+  content: '';
+  position: absolute;
+  left: -9px; top: 4px;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--brand);
+  border: 3px solid var(--paper);
+}
+.timeline .year{
+  font-family: var(--font-hand);
+  color: var(--brand-dark);
+  font-size: 15px;
+}
+.timeline .title{ font-weight: 700; margin-top: 2px; }
+.timeline .note{ color: var(--ink-soft); font-size: 14px; }
+
+/* ==========================================================================
+   カテゴリタグ（washi tape）
+   ========================================================================== */
+.tag{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-hand);
+  font-size: 14px;
+  padding: 4px 12px 5px;
+  border-radius: 3px;
+  color: white;
+  white-space: nowrap;
+}
+.filter-bar{
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+.filter-chip{
+  border: 2px solid var(--paper-line);
+  background: white;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  color: var(--ink-soft);
+}
+.filter-chip.is-active{ border-color: var(--chip-color, var(--brand)); color: var(--chip-color, var(--brand-dark)); }
+
+.tag-row{ display: inline-flex; gap: 6px; flex-wrap: wrap; }
+
+/* ==========================================================================
+   投稿カード / 一覧
+   ========================================================================== */
+.post-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 22px;
+}
+.post-card{
+  background: white;
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.post-card:hover{ transform: translateY(-4px) rotate(-0.3deg); box-shadow: var(--shadow-card-hover); }
+.post-card a{ text-decoration: none; }
+.post-thumb{
+  aspect-ratio: 16/10;
+  background: linear-gradient(135deg, var(--paper-line), var(--paper));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 40px;
+}
+.post-body{ padding: 18px 18px 22px; display:flex; flex-direction:column; gap:10px; flex:1; }
+.post-date{ font-family: var(--font-hand); color: var(--ink-soft); font-size: 14px; }
+.post-title{ font-family: var(--font-display); font-size: 19px; font-weight: 700; color: var(--ink); }
+.post-excerpt{ color: var(--ink-soft); font-size: 14px; flex: 1; }
+
+.empty-state{
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--ink-soft);
+}
+.empty-state .stamp{
+  font-family: var(--font-hand);
+  font-size: 22px;
+  color: var(--brand-dark);
+}
+
+/* ==========================================================================
+   単一記事ページ
+   ========================================================================== */
+.post-header{ margin-bottom: 28px; }
+.post-header h1{ font-size: clamp(28px, 4vw, 40px); margin-top: 10px; }
+.post-meta{ display:flex; gap:12px; align-items:center; color: var(--ink-soft); font-family: var(--font-hand); font-size: 15px; }
+.post-content{ font-size: 17px; }
+.post-content p{ margin: 0 0 1.2em; }
+.post-content img, .post-content video{ border-radius: var(--radius-card); box-shadow: var(--shadow-card); margin: 20px 0; }
+.post-content blockquote{
+  border-left: 4px solid var(--brand);
+  margin: 20px 0; padding: 4px 20px;
+  color: var(--ink-soft); font-style: italic;
+}
+.post-content h2{ font-size: 24px; margin: 28px 0 12px; }
+.post-content ul, .post-content ol{ padding-left: 1.4em; }
+
+/* ==========================================================================
+   フッター
+   ========================================================================== */
+.site-footer{
+  border-top: 1px dashed var(--paper-line);
+  padding: 32px 0 48px;
+  color: var(--ink-soft);
+  font-size: 14px;
+  text-align: center;
+}
+.site-footer a{ color: var(--ink-soft); }
+
+/* ==========================================================================
+   管理画面（admin.html）
+   ========================================================================== */
+.admin-shell{ min-height: 100vh; }
+.gate{
+  min-height: 70vh;
+  display: flex; align-items:center; justify-content:center;
+  padding: 24px;
+}
+.gate-card{ max-width: 380px; width: 100%; text-align:center; }
+.gate-card h1{ font-size: 24px; margin-bottom: 6px; }
+.gate-card p{ color: var(--ink-soft); font-size: 14px; margin-bottom: 22px;}
+.gate-card input{
+  width: 100%; padding: 12px 14px; margin-bottom: 12px;
+  border: 2px solid var(--paper-line); border-radius: 10px;
+  font-family: var(--font-body); font-size: 15px;
+}
+.gate-error{ color: var(--brand-dark); font-size: 13px; min-height: 18px; margin-top: 4px;}
+
+.admin-tabs{ display:flex; gap:10px; margin-bottom: 24px; flex-wrap: wrap; }
+.admin-tab-btn{
+  padding: 10px 18px; border-radius: 999px; border: 2px solid var(--paper-line);
+  background: white; font-weight: 700; cursor:pointer; color: var(--ink-soft);
+}
+.admin-tab-btn.is-active{ border-color: var(--brand); color: var(--brand-dark); }
+.admin-panel{ display:none; }
+.admin-panel.is-active{ display:block; }
+
+.field{ margin-bottom: 18px; }
+.field label{ display:block; font-weight: 700; margin-bottom: 6px; font-size: 14px; }
+.field input[type=text], .field input[type=date], .field select, .field textarea{
+  width: 100%; padding: 11px 13px; border: 2px solid var(--paper-line); border-radius: 10px;
+  font-family: var(--font-body); font-size: 15px; background: white;
+}
+
+.editor-toolbar{
+  display:flex; gap:6px; flex-wrap:wrap;
+  background: white; border: 2px solid var(--paper-line); border-bottom:none;
+  border-radius: 10px 10px 0 0; padding: 8px;
+}
+.editor-toolbar button{
+  border:none; background: var(--paper); width:34px; height:34px; border-radius:8px;
+  cursor:pointer; font-weight:700; font-size: 14px; color: var(--ink);
+}
+.editor-toolbar button:hover{ background: var(--paper-line); }
+.editor-toolbar label.upload-btn{
+  border:none; background: var(--paper); width:34px; height:34px; border-radius:8px;
+  cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:16px;
+}
+#editor{
+  min-height: 260px;
+  border: 2px solid var(--paper-line);
+  border-radius: 0 0 10px 10px;
+  padding: 16px;
+  background: white;
+  font-size: 16px;
+}
+
+.post-list-row{
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 14px 18px; background:white; border-radius: 12px; margin-bottom:10px;
+  box-shadow: var(--shadow-card);
+}
+.post-list-row .meta{ display:flex; gap:12px; align-items:center; }
+.row-actions button{
+  border:none; background: var(--paper); padding: 7px 14px; border-radius: 8px;
+  font-weight:700; cursor:pointer; margin-left: 8px;
+}
+.row-actions button.danger{ color: var(--brand-dark); }
+
+.status-banner{
+  padding: 12px 16px; border-radius: 10px; margin-bottom: 18px; font-weight: 700; font-size: 14px;
+}
+.status-banner.ok{ background: #E4F7EF; color: #147A5A; }
+.status-banner.err{ background: #FDEAEE; color: var(--brand-dark); }
+.status-banner.busy{ background: #EFEEFC; color: #4B3FBF; }
+
+@media (max-width: 800px){
+  .hero-inner{ grid-template-columns: 1fr; }
+  .polaroid-stack{ height: 260px; }
+}

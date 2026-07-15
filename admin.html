@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>管理画面 — ヒジリBlog</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a href="index.html" class="brand-mark" style="text-decoration:none;">
+      <span class="tape">Blog</span> ヒジリBlog
+    </a>
+    <nav class="main-nav">
+      <a href="index.html">サイトを見る</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ロック画面 -->
+<div class="gate" id="gate">
+  <div class="card gate-card">
+    <h1>🔒 管理画面</h1>
+    <p id="gate-desc">読み込み中…</p>
+    <input type="password" id="gate-pass" placeholder="合言葉" autocomplete="off">
+    <input type="password" id="gate-pass-confirm" placeholder="合言葉（確認）" autocomplete="off" style="display:none;">
+    <button class="btn btn-primary" id="gate-submit" style="width:100%;">入る</button>
+    <div class="gate-error" id="gate-error"></div>
+    <p style="font-size:12px;margin-top:16px;">※この合言葉はこのブラウザだけのロックです。本当の書き込み権限は次の画面で入力するGitHubの個人アクセストークンが持っています。トークンは絶対に他人に教えないでください。</p>
+  </div>
+</div>
+
+<!-- 管理画面本体 -->
+<main class="admin-shell wrap" id="admin-app" style="display:none;padding-top:32px;">
+
+  <div class="section-head">
+    <span class="section-eyebrow">Admin</span>
+    <h2>管理画面</h2>
+  </div>
+
+  <div id="status-banner"></div>
+
+  <div class="admin-tabs">
+    <button class="admin-tab-btn is-active" data-tab="write">✏️ 記事を書く</button>
+    <button class="admin-tab-btn" data-tab="manage">🗂 記事の管理</button>
+    <button class="admin-tab-btn" data-tab="profile">🙋 プロフィール編集</button>
+    <button class="admin-tab-btn" data-tab="settings">⚙️ GitHub連携設定</button>
+  </div>
+
+  <!-- 記事を書く -->
+  <section class="admin-panel is-active" id="panel-write">
+    <div class="card">
+      <input type="hidden" id="post-id">
+      <div class="field">
+        <label for="post-title">タイトル</label>
+        <input type="text" id="post-title" placeholder="例：今日あったこと">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="field">
+          <label for="post-tags">タグ（カンマ区切りで自由に追加できます）</label>
+          <input type="text" id="post-tags" placeholder="例：ゲーム, 攻略メモ" list="tag-suggestions">
+          <datalist id="tag-suggestions"></datalist>
+          <p style="font-size:12px;color:var(--ink-soft);margin:6px 0 0;">新しいタグを入力すると、記事一覧に自動で絞り込み項目が増えます。</p>
+        </div>
+        <div class="field">
+          <label for="post-date">日付</label>
+          <input type="date" id="post-date">
+        </div>
+      </div>
+      <div class="field">
+        <label for="post-excerpt">一覧に出す一言（抜粋）</label>
+        <textarea id="post-excerpt" rows="2" placeholder="記事一覧に表示される短い紹介文"></textarea>
+      </div>
+
+      <div class="field">
+        <label>本文</label>
+        <div class="editor-toolbar" data-target="post-editor">
+          <button type="button" data-cmd="bold" title="太字"><b>B</b></button>
+          <button type="button" data-cmd="italic" title="斜体"><i>I</i></button>
+          <button type="button" data-cmd="underline" title="下線"><u>U</u></button>
+          <button type="button" data-cmd="formatBlock:H2" title="見出し">H2</button>
+          <button type="button" data-cmd="formatBlock:BLOCKQUOTE" title="引用">❝</button>
+          <button type="button" data-cmd="insertUnorderedList" title="箇条書き">•</button>
+          <button type="button" data-cmd="insertOrderedList" title="番号付きリスト">1.</button>
+          <button type="button" data-cmd="createLink" title="リンク">🔗</button>
+          <label class="upload-btn" title="写真を追加">
+            🖼️<input type="file" accept="image/*" data-upload="image" data-target="post-editor" hidden>
+          </label>
+          <label class="upload-btn" title="動画を追加">
+            🎬<input type="file" accept="video/*" data-upload="video" data-target="post-editor" hidden>
+          </label>
+        </div>
+        <div id="post-editor" contenteditable="true" data-placeholder="今日はどんな一日でしたか？"></div>
+      </div>
+
+      <div style="display:flex;gap:12px;margin-top:20px;">
+        <button class="btn btn-primary" id="publish-btn">公開する</button>
+        <button class="btn btn-outline" id="new-post-btn" type="button">新規作成に戻す</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 記事の管理 -->
+  <section class="admin-panel" id="panel-manage">
+    <div id="post-list"></div>
+  </section>
+
+  <!-- プロフィール編集 -->
+  <section class="admin-panel" id="panel-profile">
+    <div class="card">
+      <div class="field">
+        <label for="profile-name">名前</label>
+        <input type="text" id="profile-name">
+      </div>
+      <div class="field">
+        <label for="profile-tagline">キャッチコピー</label>
+        <input type="text" id="profile-tagline">
+      </div>
+      <div class="field">
+        <label>自己紹介文</label>
+        <div class="editor-toolbar" data-target="bio-editor">
+          <button type="button" data-cmd="bold" title="太字"><b>B</b></button>
+          <button type="button" data-cmd="italic" title="斜体"><i>I</i></button>
+          <button type="button" data-cmd="underline" title="下線"><u>U</u></button>
+        </div>
+        <div id="bio-editor" contenteditable="true"></div>
+      </div>
+
+      <div class="field">
+        <label>学歴・経歴（上から順に表示されます）</label>
+        <div id="history-rows"></div>
+        <button class="btn btn-outline" id="add-history-row" type="button" style="margin-top:10px;">＋ 項目を追加</button>
+      </div>
+
+      <button class="btn btn-primary" id="save-profile-btn">プロフィールを保存</button>
+    </div>
+  </section>
+
+  <!-- GitHub連携設定 -->
+  <section class="admin-panel" id="panel-settings">
+    <div class="card">
+      <p style="color:var(--ink-soft);font-size:14px;margin-top:0;">
+        この管理画面は GitHub の個人アクセストークン（PAT）を使って、直接あなたのリポジトリにデータを保存します。
+        トークンはこの端末の localStorage にのみ保存され、他の場所には送信されません。
+      </p>
+      <div class="field">
+        <label for="gh-owner">GitHubユーザー名</label>
+        <input type="text" id="gh-owner" placeholder="例：hijiri-taro">
+      </div>
+      <div class="field">
+        <label for="gh-repo">リポジトリ名</label>
+        <input type="text" id="gh-repo" placeholder="例：hijiri-blog">
+      </div>
+      <div class="field">
+        <label for="gh-branch">ブランチ名</label>
+        <input type="text" id="gh-branch" placeholder="main" value="main">
+      </div>
+      <div class="field">
+        <label for="gh-token">個人アクセストークン（Fine-grained PAT / repo権限）</label>
+        <input type="text" id="gh-token" placeholder="ghp_... または github_pat_...">
+      </div>
+      <div style="display:flex;gap:12px;">
+        <button class="btn btn-primary" id="save-settings-btn">保存する</button>
+        <button class="btn btn-outline" id="test-connection-btn" type="button">接続テスト</button>
+      </div>
+      <p style="font-size:13px;margin-top:18px;">
+        トークンの作り方：GitHubの Settings → Developer settings → Personal access tokens → Fine-grained tokens で、
+        このリポジトリだけに対象を絞り、「Contents」の権限を Read and write にして発行してください。
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<script src="js/github-api.js"></script>
+<script src="js/site.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

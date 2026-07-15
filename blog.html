@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>記事一覧 — ヒジリBlog</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a href="index.html" class="brand-mark" style="text-decoration:none;">
+      <span class="tape">Blog</span> ヒジリBlog
+    </a>
+    <nav class="main-nav">
+      <a href="index.html">ホーム</a>
+      <a href="blog.html">記事一覧</a>
+      <a href="index.html#about">プロフィール</a>
+    </nav>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <span class="section-eyebrow">Archive</span>
+      <h2>記事一覧</h2>
+    </div>
+
+    <div class="filter-bar" id="filter-bar">
+      <!-- 投稿されているタグから自動で生成されます -->
+    </div>
+
+    <div class="post-grid" id="post-grid">
+      <div class="empty-state"><div class="stamp">読み込み中…</div></div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>© <span id="year"></span> ヒジリBlog</p>
+  </div>
+</footer>
+
+<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+<script src="js/site.js"></script>
+</body>
+</html>
