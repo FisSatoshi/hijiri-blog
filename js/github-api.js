@@ -28,6 +28,15 @@ function ghApiBase(cfg){
   return `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents`;
 }
 
+/** 設定が保存されているか確認し、なければ分かりやすいエラーを投げる */
+function ghRequireConfig(){
+  const cfg = ghGetConfig();
+  if(!cfg || !cfg.owner || !cfg.repo || !cfg.token){
+    throw new Error("GitHubの接続設定が未入力です。「GitHub連携設定」タブでユーザー名・リポジトリ名・トークンを入力して保存してください。");
+  }
+  return cfg;
+}
+
 async function ghRequest(url, options = {}){
   const cfg = ghGetConfig();
   if(!cfg || !cfg.token) throw new Error("GitHubの接続設定がありません。設定タブでトークンを入力してください。");

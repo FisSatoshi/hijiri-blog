@@ -322,18 +322,18 @@ async function refreshPostList(){
 
 function historyRowHTML(item = { year: "", title: "", note: "" }){
   return `
-    <div class="history-row" style="display:grid;grid-template-columns:1fr 2fr 2fr auto;gap:8px;margin-bottom:8px;align-items:center;">
+    <div class="history-row">
       <input type="text" class="h-year" placeholder="2026年4月" value="${escapeHTML(item.year)}">
       <input type="text" class="h-title" placeholder="〇〇大学 入学" value="${escapeHTML(item.title)}">
       <input type="text" class="h-note" placeholder="補足（任意）" value="${escapeHTML(item.note || "")}">
-      <button type="button" class="danger" style="border:none;background:var(--paper);border-radius:8px;padding:8px 12px;cursor:pointer;">✕</button>
+      <button type="button" class="h-remove" aria-label="この項目を削除">✕</button>
     </div>`;
 }
 
 function renderHistoryRows(history){
   const wrap = document.getElementById("history-rows");
   wrap.innerHTML = (history.length ? history : [{year:"",title:"",note:""}]).map(historyRowHTML).join("");
-  wrap.querySelectorAll(".danger").forEach(btn => {
+  wrap.querySelectorAll(".h-remove").forEach(btn => {
     btn.addEventListener("click", () => btn.closest(".history-row").remove());
   });
 }
@@ -434,7 +434,7 @@ function initAdminApp(){
   document.getElementById("test-connection-btn").addEventListener("click", testConnection);
   document.getElementById("add-history-row").addEventListener("click", () => {
     document.getElementById("history-rows").insertAdjacentHTML("beforeend", historyRowHTML());
-    document.querySelectorAll("#history-rows .history-row .danger").forEach(btn => {
+    document.querySelectorAll("#history-rows .history-row .h-remove").forEach(btn => {
       btn.onclick = () => btn.closest(".history-row").remove();
     });
   });
