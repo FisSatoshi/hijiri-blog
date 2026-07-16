@@ -175,13 +175,6 @@ async function renderSinglePost(){
 
   document.title = `${post.title} — ヒジリBlog`;
 
-  const mediaHTML = (post.media || []).map(m => {
-    if(m.type === "video"){
-      return `<video controls src="${m.src}"></video>${m.caption ? `<p class="post-date">${escapeHTML(m.caption)}</p>` : ""}`;
-    }
-    return `<img src="${m.src}" alt="${escapeHTML(m.caption || '')}">${m.caption ? `<p class="post-date">${escapeHTML(m.caption)}</p>` : ""}`;
-  }).join("");
-
   root.innerHTML = `
     <div class="post-header">
       <div class="post-meta">
@@ -191,7 +184,6 @@ async function renderSinglePost(){
       <h1>${escapeHTML(post.title)}</h1>
     </div>
     <div class="post-content">${post.body || ""}</div>
-    ${mediaHTML}
     <p style="margin-top:40px;"><a href="blog.html">← 記事一覧にもどる</a></p>
   `;
 }
