@@ -102,6 +102,9 @@ function initTabs(){
 
 function initEditorToolbars(){
   document.querySelectorAll(".editor-toolbar").forEach(toolbar => {
+    if(toolbar.dataset.wired === "1") return; // 二重初期化によるボタンの多重登録を防ぐ
+    toolbar.dataset.wired = "1";
+
     const targetId = toolbar.dataset.target;
     const editor = document.getElementById(targetId);
 
@@ -139,9 +142,13 @@ async function handleMediaUpload(input, editor){
   const file = input.files[0];
   if(!file) return;
 
+  if(input.dataset.busy === "1") return; // 同じ選択に対する二重実行を防ぐ
+  input.dataset.busy = "1";
+
   if(file.size > 20 * 1024 * 1024){
     showStatus("ファイルが大きすぎます（20MBまで）。動画は圧縮するか、外部サービス（YouTube限定公開など）へのリンクをご利用ください。", "err");
     input.value = "";
+    input.dataset.busy = "0";
     return;
   }
   if(file.size > 1 * 1024 * 1024){
@@ -170,6 +177,7 @@ async function handleMediaUpload(input, editor){
     showStatus(`アップロードに失敗しました: ${e.message}`, "err");
   }finally{
     input.value = "";
+    input.dataset.busy = "0";
   }
 }
 
