@@ -202,6 +202,7 @@ function clearPostForm(){
   document.getElementById("post-id").value = "";
   document.getElementById("post-title").value = "";
   document.getElementById("post-tags").value = "";
+  document.getElementById("post-icon").value = "";
   document.getElementById("post-date").value = new Date().toISOString().slice(0,10);
   document.getElementById("post-excerpt").value = "";
   document.getElementById("post-editor").innerHTML = "";
@@ -211,6 +212,7 @@ function fillPostForm(post){
   document.getElementById("post-id").value = post.id;
   document.getElementById("post-title").value = post.title;
   document.getElementById("post-tags").value = normalizeTags(post).join(", ");
+  document.getElementById("post-icon").value = post.icon || "";
   document.getElementById("post-date").value = post.date;
   document.getElementById("post-excerpt").value = post.excerpt || "";
   document.getElementById("post-editor").innerHTML = post.body || "";
@@ -254,6 +256,7 @@ async function publishPost(){
       id,
       title,
       tags: tags.length ? tags : ["その他"],
+      icon: document.getElementById("post-icon").value.trim(),
       date: document.getElementById("post-date").value || new Date().toISOString().slice(0,10),
       excerpt: document.getElementById("post-excerpt").value.trim(),
       body,
@@ -444,6 +447,12 @@ function initAdminApp(){
     document.getElementById("history-rows").insertAdjacentHTML("beforeend", historyRowHTML());
     document.querySelectorAll("#history-rows .history-row .h-remove").forEach(btn => {
       btn.onclick = () => btn.closest(".history-row").remove();
+    });
+  });
+
+  document.querySelectorAll("#icon-picker .icon-pick").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.getElementById("post-icon").value = btn.dataset.icon;
     });
   });
 

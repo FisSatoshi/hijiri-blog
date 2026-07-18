@@ -9,6 +9,16 @@
    1つのタグの中の「親タグ，子タグ」という階層区切りとして扱う。 */
 const TAG_PALETTE = ["#FF8552", "#7C5CFC", "#17A398", "#FFC145", "#E94F7B", "#4C6EF5", "#37B24D", "#F06595"];
 
+/* サムネイルのアイコン：投稿ごとに手動指定（post.icon）があればそれを優先し、
+   なければタグ名から自動で決める（よくあるタグは専用アイコン、それ以外はハッシュで固定の絵文字を割り当てる）。 */
+const TAG_ICON_MAP = {
+  "日記": "📓", "つぶやき": "💬", "ゲーム": "🎮", "お出かけ": "🚃", "旅行": "✈️",
+  "グルメ": "🍜", "食べ物": "🍙", "映画": "🎬", "音楽": "🎵", "読書": "📚",
+  "写真": "📸", "スポーツ": "⚽", "ペット": "🐾", "勉強": "🖊️", "仕事": "💼",
+  "趣味": "🎨", "その他": "✏️",
+};
+const ICON_PALETTE = ["✨", "🌟", "🍀", "🎈", "🧸", "🌈", "🔖", "🎧", "🌙", "🍡", "🧁", "🪁"];
+
 /** "ゲーム，マリオカートワールド" → { parent: "ゲーム", child: "マリオカートワールド" } */
 function splitHier(tagName){
   const parts = String(tagName).split("，").map(s => s.trim()).filter(Boolean);
@@ -70,6 +80,16 @@ function collectAllTags(posts){
   return Array.from(set).sort((a, b) => a.localeCompare(b, "ja"));
 }
 
+function postIcon(post){
+  if(post.icon && String(post.icon).trim()) return String(post.icon).trim();
+  const tags = normalizeTags(post);
+  const top = tags.length ? splitHier(tags[0]).parent : "その他";
+  if(TAG_ICON_MAP[top]) return TAG_ICON_MAP[top];
+  let hash = 0;
+  for(const ch of top) hash = (hash * 31 + ch.charCodeAt(0)) >>> 0;
+  return ICON_PALETTE[hash % ICON_PALETTE.length];
+}
+
 async function loadJSON(path){
   const res = await fetch(path, { cache: "no-store" });
   if(!res.ok) throw new Error(`${path} を読み込めませんでした`);
@@ -103,13 +123,21 @@ function formatDate(iso){
 }
 
 function postCardHTML(post){
-  const thumb = post.media && post.media[0] && post.media[0].type === "image"
-    ? `<img src="${post.media[0].src}" alt="" style="width:100%;height:100%;object-fit:cover;">`
-    : "📝";
+  const primaryTag = normalizeTags(post)[0];
+  const accent = tagColor(primaryTag);
+  const hasImage = post.media && post.media[0] && post.media[0].type === "image";
+
+  const thumbInner = hasImage
+    ? `<img class="thumb-photo" src="${post.media[0].src}" alt="" loading="lazy">
+       <div class="thumb-overlay"><span>続きを読む ↗</span></div>`
+    : `<div class="thumb-icon-tile" style="background: linear-gradient(135deg, color-mix(in srgb, ${accent} 22%, white), color-mix(in srgb, ${accent} 6%, white));">
+         <span class="thumb-icon">${postIcon(post)}</span>
+       </div>`;
+
   return `
     <article class="post-card">
       <a href="post.html?id=${encodeURIComponent(post.id)}">
-        <div class="post-thumb">${thumb}</div>
+        <div class="post-thumb" style="--accent:${accent};">${thumbInner}</div>
         <div class="post-body">
           <div class="post-date">${formatDate(post.date)}</div>
           <div class="tag-row">${tagChipsHTML(post)}</div>
@@ -194,6 +222,7 @@ async function renderBlogList(){
       }
       const dropdown = `
         <div class="tag-dropdown">
+          <div class="tag-dropdown-label">${escapeHTML(parent)}のタグ</div>
           ${children.map(c => `<button class="tag-dropdown-chip" data-filter="${escapeHTML(parent)}，${escapeHTML(c)}" style="--chip-color:${color};">${escapeHTML(c)}</button>`).join("")}
         </div>`;
       return `
@@ -266,6 +295,24 @@ async function renderSinglePost(){
   `;
 }
 
+/* ---- 背景の浮遊モチーフ（admin.html以外の閲覧ページにだけ表示） ---- */
+function renderBackgroundDecor(){
+  if(document.getElementById("gate")) return; // 管理画面では出さない
+  if(document.getElementById("bg-decor")) return;
+  const decor = document.createElement("div");
+  decor.id = "bg-decor";
+  decor.setAttribute("aria-hidden", "true");
+  decor.innerHTML = `
+    <span class="deco d1">✦</span>
+    <span class="deco d2">🎈</span>
+    <span class="deco d3">✎</span>
+    <span class="deco d4">☁️</span>
+    <span class="deco d5">✦</span>
+    <span class="deco d6">🎀</span>
+  `;
+  document.body.appendChild(decor);
+}
+
 /* ---- ナビゲーションの現在地ハイライト ---- */
 function highlightNav(){
   const path = location.pathname.split("/").pop() || "index.html";
@@ -276,6 +323,7 @@ function highlightNav(){
 
 document.addEventListener("DOMContentLoaded", () => {
   highlightNav();
+  renderBackgroundDecor();
   renderHomeLatest();
   renderHomeProfile();
   renderBlogList();

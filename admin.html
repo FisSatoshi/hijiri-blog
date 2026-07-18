@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>管理画面 — ヒジリBlog</title>
 <meta name="robots" content="noindex, nofollow">
-<link rel="stylesheet" href="css/style.css?v=4">
+<link rel="stylesheet" href="css/style.css?v=5">
 </head>
 <body>
 
@@ -77,6 +77,25 @@
       <div class="field">
         <label for="post-excerpt">一覧に出す一言（抜粋）</label>
         <textarea id="post-excerpt" rows="2" placeholder="記事一覧に表示される短い紹介文"></textarea>
+      </div>
+
+      <div class="field">
+        <label for="post-icon">一覧に出すアイコン（空欄なら、タグに合わせて自動で選ばれます）</label>
+        <input type="text" id="post-icon" maxlength="4" placeholder="例：🎮（絵文字を1つだけ／空欄でもOK）">
+        <div class="icon-picker" id="icon-picker">
+          <button type="button" class="icon-pick" data-icon="📓">📓</button>
+          <button type="button" class="icon-pick" data-icon="🎮">🎮</button>
+          <button type="button" class="icon-pick" data-icon="🚃">🚃</button>
+          <button type="button" class="icon-pick" data-icon="✈️">✈️</button>
+          <button type="button" class="icon-pick" data-icon="🍜">🍜</button>
+          <button type="button" class="icon-pick" data-icon="📸">📸</button>
+          <button type="button" class="icon-pick" data-icon="🎬">🎬</button>
+          <button type="button" class="icon-pick" data-icon="📚">📚</button>
+          <button type="button" class="icon-pick" data-icon="🎨">🎨</button>
+          <button type="button" class="icon-pick" data-icon="✨">✨</button>
+          <button type="button" class="icon-pick" data-icon="🧁">🧁</button>
+          <button type="button" class="icon-pick" data-icon="" title="自動に戻す">↺自動</button>
+        </div>
       </div>
 
       <div class="field">
@@ -179,8 +198,8 @@
 
 </main>
 
-<script src="js/github-api.js?v=4"></script>
-<script src="js/site.js?v=4"></script>
-<script src="js/admin.js?v=4"></script>
+<script src="js/github-api.js?v=5"></script>
+<script src="js/site.js?v=5"></script>
+<script src="js/admin.js?v=5"></script>
 </body>
 </html>
