@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>管理画面 — ヒジリBlog</title>
 <meta name="robots" content="noindex, nofollow">
-<link rel="stylesheet" href="css/style.css?v=3">
+<link rel="stylesheet" href="css/style.css?v=4">
 </head>
 <body>
 
@@ -61,9 +61,13 @@
       <div class="field-row">
         <div class="field">
           <label for="post-tags">タグ（カンマ区切りで自由に追加できます）</label>
-          <input type="text" id="post-tags" placeholder="例：ゲーム, 攻略メモ" list="tag-suggestions">
+          <input type="text" id="post-tags" placeholder="例：ゲーム，マリオカートワールド, 日記" list="tag-suggestions">
           <datalist id="tag-suggestions"></datalist>
-          <p style="font-size:12px;color:var(--ink-soft);margin:6px 0 0;">新しいタグを入力すると、記事一覧に自動で絞り込み項目が増えます。</p>
+          <p style="font-size:12px;color:var(--ink-soft);margin:6px 0 0;">
+            半角のカンマ「,」で複数のタグを区切れます。<br>
+            全角の読点「，」を使うと、1つのタグの中に「親タグ，子タグ」の階層を作れます（例：<b>ゲーム，マリオカートワールド</b>）。<br>
+            記事一覧では「ゲーム」タグにカーソルを合わせる（スマホではタップする）と、細分化された子タグが一覧で出てきます。
+          </p>
         </div>
         <div class="field">
           <label for="post-date">日付</label>
@@ -175,8 +179,8 @@
 
 </main>
 
-<script src="js/github-api.js?v=3"></script>
-<script src="js/site.js?v=3"></script>
-<script src="js/admin.js?v=3"></script>
+<script src="js/github-api.js?v=4"></script>
+<script src="js/site.js?v=4"></script>
+<script src="js/admin.js?v=4"></script>
 </body>
 </html>

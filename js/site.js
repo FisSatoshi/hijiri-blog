@@ -4,12 +4,21 @@
    ========================================================================== */
 
 /* タグは自由入力。色は文字列から自動で決めるので、
-   新しいタグを付けるだけで見た目も自動的に増えていく。 */
+   新しいタグを付けるだけで見た目も自動的に増えていく。
+   半角カンマ(,)は複数タグの区切り、全角の読点(，)は
+   1つのタグの中の「親タグ，子タグ」という階層区切りとして扱う。 */
 const TAG_PALETTE = ["#FF8552", "#7C5CFC", "#17A398", "#FFC145", "#E94F7B", "#4C6EF5", "#37B24D", "#F06595"];
 
+/** "ゲーム，マリオカートワールド" → { parent: "ゲーム", child: "マリオカートワールド" } */
+function splitHier(tagName){
+  const parts = String(tagName).split("，").map(s => s.trim()).filter(Boolean);
+  return { parent: parts[0] || "その他", child: parts[1] || null };
+}
+
 function tagColor(tagName){
+  const { parent } = splitHier(tagName);
   let hash = 0;
-  for(const ch of String(tagName)) hash = (hash * 31 + ch.charCodeAt(0)) >>> 0;
+  for(const ch of parent) hash = (hash * 31 + ch.charCodeAt(0)) >>> 0;
   return TAG_PALETTE[hash % TAG_PALETTE.length];
 }
 
@@ -20,16 +29,44 @@ function normalizeTags(post){
 }
 
 function tagChip(tagName){
-  return `<span class="tag" style="background:${tagColor(tagName)};">${escapeHTML(tagName)}</span>`;
+  const { parent, child } = splitHier(tagName);
+  const label = child
+    ? `${escapeHTML(parent)}<span class="tag-sub">›${escapeHTML(child)}</span>`
+    : escapeHTML(parent);
+  return `<span class="tag" style="background:${tagColor(tagName)};">${label}</span>`;
 }
 
 function tagChipsHTML(post){
   return normalizeTags(post).map(tagChip).join(" ");
 }
 
+/** タグの一覧から「親タグ → 使われている子タグ一覧」のツリーを組み立てる */
+function buildTagTree(posts){
+  const map = new Map();
+  posts.forEach(p => normalizeTags(p).forEach(raw => {
+    const { parent, child } = splitHier(raw);
+    if(!map.has(parent)) map.set(parent, new Set());
+    if(child) map.get(parent).add(child);
+  }));
+  return Array.from(map.entries())
+    .map(([parent, childSet]) => ({ parent, children: Array.from(childSet).sort((a, b) => a.localeCompare(b, "ja")) }))
+    .sort((a, b) => a.parent.localeCompare(b.parent, "ja"));
+}
+
+/** 投稿のタグが、指定した絞り込み条件(親タグのみ／親，子の厳密一致)に合うか判定 */
+function tagMatchesFilter(rawTag, filterValue){
+  const { parent, child } = splitHier(rawTag);
+  const f = splitHier(filterValue);
+  if(f.child) return parent === f.parent && child === f.child;
+  return parent === f.parent;
+}
+
 function collectAllTags(posts){
   const set = new Set();
-  posts.forEach(p => normalizeTags(p).forEach(t => set.add(t)));
+  posts.forEach(p => normalizeTags(p).forEach(t => {
+    set.add(t.trim());
+    set.add(splitHier(t).parent);
+  }));
   return Array.from(set).sort((a, b) => a.localeCompare(b, "ja"));
 }
 
@@ -128,31 +165,72 @@ async function renderBlogList(){
   const filterBar = document.getElementById("filter-bar");
   if(!grid) return;
   const posts = await loadPosts();
-  const allTags = collectAllTags(posts);
+  const tagTree = buildTagTree(posts);
   let currentFilter = "all";
 
   function draw(){
-    const filtered = currentFilter === "all" ? posts : posts.filter(p => normalizeTags(p).includes(currentFilter));
+    const filtered = currentFilter === "all"
+      ? posts
+      : posts.filter(p => normalizeTags(p).some(t => tagMatchesFilter(t, currentFilter)));
     grid.innerHTML = filtered.length
       ? filtered.map(postCardHTML).join("")
       : `<div class="empty-state" style="grid-column:1/-1;"><div class="stamp">このタグの投稿はまだありません</div></div>`;
   }
 
+  function closeAllDropdowns(){
+    filterBar.querySelectorAll(".tag-filter-group.is-open").forEach(g => g.classList.remove("is-open"));
+    filterBar.querySelectorAll(".tag-caret").forEach(c => c.setAttribute("aria-expanded", "false"));
+  }
+
   function drawFilterBar(){
     if(!filterBar) return;
-    const chips = [`<button class="filter-chip is-active" data-filter="all">すべて</button>`]
-      .concat(allTags.map(t => `<button class="filter-chip" data-filter="${escapeHTML(t)}" style="--chip-color:${tagColor(t)};">${escapeHTML(t)}</button>`));
-    filterBar.innerHTML = chips.join("");
+    const allBtn = `<button class="filter-chip is-active" data-filter="all">すべて</button>`;
 
-    filterBar.querySelectorAll(".filter-chip").forEach(btn => {
+    const groups = tagTree.map(({ parent, children }) => {
+      const color = tagColor(parent);
+      const mainBtn = `<button class="filter-chip" data-filter="${escapeHTML(parent)}" style="--chip-color:${color};">${escapeHTML(parent)}</button>`;
+      if(children.length === 0){
+        return `<div class="tag-filter-group">${mainBtn}</div>`;
+      }
+      const dropdown = `
+        <div class="tag-dropdown">
+          ${children.map(c => `<button class="tag-dropdown-chip" data-filter="${escapeHTML(parent)}，${escapeHTML(c)}" style="--chip-color:${color};">${escapeHTML(c)}</button>`).join("")}
+        </div>`;
+      return `
+        <div class="tag-filter-group has-children">
+          ${mainBtn}
+          <button type="button" class="tag-caret" aria-label="${escapeHTML(parent)}の詳細タグを開く" aria-expanded="false">▾</button>
+          ${dropdown}
+        </div>`;
+    }).join("");
+
+    filterBar.innerHTML = allBtn + groups;
+
+    filterBar.querySelectorAll("[data-filter]").forEach(btn => {
       btn.addEventListener("click", () => {
-        filterBar.querySelectorAll(".filter-chip").forEach(b => b.classList.remove("is-active"));
+        filterBar.querySelectorAll("[data-filter]").forEach(b => b.classList.remove("is-active"));
         btn.classList.add("is-active");
         currentFilter = btn.dataset.filter;
         draw();
+        closeAllDropdowns();
+      });
+    });
+
+    filterBar.querySelectorAll(".tag-caret").forEach(caret => {
+      caret.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const group = caret.closest(".tag-filter-group");
+        const wasOpen = group.classList.contains("is-open");
+        closeAllDropdowns();
+        if(!wasOpen){
+          group.classList.add("is-open");
+          caret.setAttribute("aria-expanded", "true");
+        }
       });
     });
   }
+
+  document.addEventListener("click", () => { if(filterBar) closeAllDropdowns(); });
 
   drawFilterBar();
   draw();
