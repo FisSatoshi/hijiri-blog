@@ -1,6 +1,24 @@
 {
   "posts": [
     {
+      "id": "2026-07-19-niscの練習-pju1",
+      "title": "NISCの練習",
+      "tags": [
+        "ゲーム，マリオカートワールド"
+      ],
+      "icon": "🎮",
+      "date": "2026-07-19",
+      "excerpt": "トロフィーシティ",
+      "body": "<b>難しすぎて滅ですこれ。</b><p><video controls=\"\" src=\"assets/2026/07/1784434117598-9c848fdf-2b2a-4079-8c73-d50e4a02f67c.mp4\"></video></p>",
+      "media": [
+        {
+          "type": "video",
+          "src": "assets/2026/07/1784434117598-9c848fdf-2b2a-4079-8c73-d50e4a02f67c.mp4",
+          "caption": ""
+        }
+      ]
+    },
+    {
       "id": "2026-07-19-niscの練習-chuo",
       "title": "NISCの練習",
       "tags": [
